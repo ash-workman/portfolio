@@ -119,17 +119,21 @@ def find_hitlist(query, invindex)
 end
 end
 
-def tfidf_score(clean_query, invindex, docindex, num_of_doc)
-  tfidf_hash = Hash.new {|a,b| a[b]=[]}
-  tfidf_hash.default = 0
-  for  term in clean_query
-    if invindex.include?(term)
-      inv_nested = invindex[term]
+def tfidf_score(clean_query, invindex, docindex, num_of_doc, pagerank)
+  combined_score_hash = Hash.new {|a,b| a[b]=[]}
+  combined_score_hash.default = 0
+  for key, value in pagerank
+    rank = pagerank[key]
+  end
+#    puts rank
+   for  term in clean_query
+     if invindex.include?(term)
+       inv_nested = invindex[term]
      # puts inv_nested.keys
-      rel_docs = invindex[term]
+       rel_docs = invindex[term]
 #      puts rel_docs
 #doc count is the number of of docs that contain term
-      doc_count = rel_docs.length
+       doc_count = rel_docs.length
       #puts doc_count
     # puts docindex[page]
 #      doc_nested = docindex.values
@@ -137,13 +141,13 @@ def tfidf_score(clean_query, invindex, docindex, num_of_doc)
 #      doc_further = doc_nested[0]
     end
 #if term in inv_nested.keys
-  for key, value in inv_nested
+     for key, value in inv_nested
 # count is number of times term appears on page 
-   count = inv_nested[key]
+       count = inv_nested[key]
 #    puts count
-    doc_nested = docindex[key] 
+       doc_nested = docindex[key] 
 #doc_further is total number terms per page
-    doc_further = doc_nested[0]
+       doc_further = doc_nested[0]
    # puts doc_further
 #    puts doc_nested
 #    count = inv_nested_further[page]
@@ -151,17 +155,22 @@ def tfidf_score(clean_query, invindex, docindex, num_of_doc)
 #      puts inv_nested
 #      doc_nested = docindex[page]
  #     doc_terms = doc_nested[0]
-      tf = count / doc_further.to_f
-      idf = 1 / (1 + Math.log(doc_count.to_f))
-      tfidf = tf * idf 
-      tfidf_hash[key] = tfidf
-#    puts tfidf_hash
+       puts rank
+       tf = count / doc_further.to_f
+       idf = 1 / (1 + Math.log(doc_count.to_f))
+       tfidf = tf * idf
+#       puts tfidf
+       score = tfidf * rank
+       combined_score_hash[key] = score
+      # puts combined_score_hash
+      end
     end
-  end
+ # end
 # puts tfidf_hash
-  tfidf_hash.reject { |a,b| a.nil? }
-  sorted_hash = tfidf_hash.sort {|a,b| a[1]<=>b[1]}.reverse
-  return sorted_hash[0..24]
+  combined_score_hash.reject { |a,b| a.nil? }
+  sorted_hash = combined_score_hash.sort {|a,b| a[1]<=>b[1]}.reverse
+  return sorted_hash
+#  puts sorted hash
 end
 
 
@@ -198,6 +207,9 @@ query_term = stem_tokens(user_query)
 clean_query = remove_stop_tokens(query_term, stopwords)
 #puts clean_query.inspect
 
+
+pagerank = read_data('pagerank.dat')
+#puts pagerank
 # Step (2) Use the inverted index file to find the hit list
 hit_list = find_hitlist(clean_query, invindex)
 #puts hit_list.inspect
@@ -209,8 +221,6 @@ num_of_doc = hit_list.length
 
 #top_results = tfidf_score(clean_query, invindex, docindex, num_of_doc)
 #my_results = Hash[top_results.map {|key, value| [key, value]}]
-
-
 
 
 # Step (4) Display the total number of documents 
@@ -225,7 +235,7 @@ if (num_of_doc == 0)
 else
 #  num_of_doc = hit_list.length
 
-  top_results = tfidf_score(clean_query, invindex, docindex, num_of_doc)
+  top_results = tfidf_score(clean_query, invindex, docindex, num_of_doc, pagerank)
   my_results = Hash[top_results.map {|key, value| [key, value]}]
 
 
