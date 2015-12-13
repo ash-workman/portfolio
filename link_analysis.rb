@@ -66,11 +66,108 @@ def find_pagerank(file)
 return rank
 end
 
+
+def find_rank(file)
+  dir = 'pages/'
+  file_list = list_files('pages/')
+  pagerank = Hash.new {|h,k| h[k]=[]}
+  num_pages = file_list.length
+  start_rank = 1.0 / num_pages.to_f
+#  puts (1.0 / num_pages).to_f
+ page_data = Hash.new {|h,k| h[k]=[]}
+  file_list.each do |page|
+    my_page = read_html_file(page)
+    links = find_links(my_page).length
+#    page_data[page] = (start_rank, links)
+#    puts links
+ # puts page_data
+ #   pagerank[page] = page_data
+# puts pagerank
+  p  = 1.0
+  count = 0
+ #end 
+#puts pagerank
+while count < num_pages
+    #return if count > num_pages
+   # constant += 1.0
+    count += 1
+    next_page = file_list[count]
+#    puts next_page
+    next_data = pagerank[next_page]
+#    puts next_data
+#    c_page = page_data[count][0]
+  #    puts next_page[0]
+#    show_links = find_links(next_page)
+#    puts next_page
+ #  links = find_links(my_page).length 
+#    puts links
+#problem is with pagerank[nextpage]
+  # next_rank = pagerank[file_list[count]]
+#   puts pagerank
+#   pagerank[page] = p  / num_pages + ( 1 - p) * c_page.values[0] / c_page.values[1]  
+ 
+  #  return pagerank
+ # puts pagerank.values
+# puts pagerank[key]
+  end
+#puts page_data.keys
+end
+end
+
+
+
+def write_data(filename, data)
+  file = File.open(filename, "w")
+  file.puts(data)
+  file.close
+end
+
 ##############################main######################################
 
-#file_list = list_files('pages/')
+file_list = list_files('pages/')
 
-file_name = 'pages/1.html'
-html_code = read_html_file(file_name)
+#puts find_rank(html_code)
 
-puts find_pagerank(html_code)
+count = 0
+
+num_pages = file_list.length
+start_rank = 1.0 / num_pages.to_f
+initial_pagerank = Hash.new {|h,k| h[k]=[]}
+link_totals = Hash.new {|h,k| h[k]=[]}
+for page in file_list
+  html_code = read_html_file(page)
+  links = find_links(html_code)
+  link_totals[page] = (links.length).to_f
+ initial_pagerank[page] = start_rank
+end
+
+pagerank = Hash.new {|h,k| h[k]=[]}
+#p = 1.0
+
+for page in file_list
+    if link_totals[page] = 0
+      link_totals[page] = 1
+    else link_totals[page] = link_totals[page]
+    end
+    pagerank[page] = 0.85  / num_pages + ( 1 - 0.85) * initial_pagerank[page] / link_totals[page]
+#  end
+end
+
+#puts link_totals
+
+while count < 5
+  count += 1
+  new_pagerank = Hash.new {|h,k| h[k]=[]}
+  for page in file_list
+    if link_totals[page] = 0
+      link_totals[page] = 1
+    else link_totals[page] = link_totals[page]
+    end
+   new_pagerank[page] = 0.85  / num_pages + ( 1 - 0.85) * pagerank[page] / link_totals[page]
+  end
+end
+
+
+puts new_pagerank
+
+write_data('pagerank.dat', new_pagerank)
