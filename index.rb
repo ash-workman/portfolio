@@ -22,14 +22,14 @@ end
 #  (Why? Hint: think about how you'll use the stop words.)
 #
 def load_stopwords_file(file) 
-	stop_words = {}
+  stop_words = {}
 
-	# Looping through the file and adding each word to a hash table after chomping them
-	File.open(file, "r").each_line do |line|
-		stop_words[line.chomp] = 1
-	end
+  # Looping through the file and adding each word to a hash table after chomping them
+  File.open(file, "r").each_line do |line|
+    stop_words[line.chomp] = 1
+    end
 
-	return stop_words
+  return stop_words
 
 end
 
@@ -39,10 +39,10 @@ end
 # directory.
 #
 def list_files(dir)
-	# Getting all the files names in the directory
-	file_names = Dir[dir + "*"]
+  # Getting all the files names in the directory
+  file_names = Dir[dir + "*"]
 
-	return file_names
+  return file_names
 
 end
 
@@ -56,14 +56,20 @@ end
 # content on the page
 
 def parse_html(html)
-	doc = Nokogiri::HTML(html)
+  doc = Nokogiri::HTML(html)
 
-	# Removing style and script tag content such as Javascript tags in order to get rid of JUNK text
-	doc.xpath("//script").remove
-	doc.xpath("//style").remove
-	text  = doc.at('body').inner_text
+  # Removing style and script tag content such as Javascript tags in order to get rid of JUNK text
+  doc.xpath("//script").remove
+  doc.xpath("//style").remove
+  begin
+    text  = doc.at('body').inner_text
+  rescue NoMethodError
+    puts "NoMethodError"
+   # puts file_name
+    #title = nil
+  end
 
-	return text
+  return text
 end
 
 
@@ -71,28 +77,28 @@ end
 # return a list of words/tokens in the text
 
 def remove_punc(text)
-	word_list = []
+  word_list = []
 
 
-	# Checking for correct encoding and reencoding the string if necessary
-	if ! text.valid_encoding?
-  		text = text.encode("UTF-16be", :invalid=>:replace, :replace=>"?").encode('UTF-8')
-	end
-	
-	# Removing puctuation
-    	words = text.split(/[ ,;{}`~!@#$%^&*<>.:"'|?\\()_+=\/\[\]\-]/)
-	
-	# Looping though the list, checking for valid words, and changing their case
-	for word in words
-		word = word[/\w*/]
-		word.downcase!
-		word_list.push(word)
-	end
+  # Checking for correct encoding and reencoding the string if necessary
+  if ! text.valid_encoding?
+    text = text.encode("UTF-16be", :invalid=>:replace, :replace=>"?").encode('UTF-8')
+    end
+  
+  # Removing puctuation
+  words = text.split(/[ ,;{}`~!@#$%^&*<>.:"'|?\\()_+=\/\[\]\-]/)
+  
+  # Looping though the list, checking for valid words, and changing their case
+  for word in words
+    word = word[/\w*/]
+    word.downcase!
+    word_list.push(word)
+    end
 
-	# Deleting blanks
-	word_list.delete("")
+  # Deleting blanks
+  word_list.delete("")
 
-	return word_list
+  return word_list
 
 end
 
@@ -101,15 +107,15 @@ end
 #  of tokens (words) in that file. 
 #
 def find_tokens(filename)
-	html = File.read(filename)
+  html = File.read(filename)
 
-	# Parsing the HTML content of the file
-	parsed_html = parse_html(html)
-	
-	# Converting the text into a list of tokens after removing punctuation
-	tokens = remove_punc(parsed_html)
+  # Parsing the HTML content of the file
+  parsed_html = parse_html(html)
+  
+  # Converting the text into a list of tokens after removing punctuation
+  tokens = remove_punc(parsed_html)
 
-	return tokens	
+  return tokens
 end
 
 
@@ -118,14 +124,14 @@ end
 #
 def remove_stop_tokens(tokens, stop_words)
 
-	# Looping through the list of tokens and removing all the stop words from the list
-	for i in tokens
-		if stop_words.member?(i)
-			tokens.delete(i)
-		end
-	end
-	
-	return tokens
+  # Looping through the list of tokens and removing all the stop words from the list
+  for i in tokens
+    if stop_words.member?(i)
+      tokens.delete(i)
+      end
+    end
+  
+  return tokens
 end
 
 
@@ -133,30 +139,36 @@ end
 #  and then returns a new list with the stems
 #
 def stem_tokens(tokens)
-	stem_list = []
+  stem_list = []
 
-	# Looping through the list and finding the stem word for each word
-	for word in tokens
-		word = word[/\w*/]
-		s = word.stem
-		stem_list.push(s)
-	end
+  # Looping through the list and finding the stem word for each word
+  for word in tokens
+    word = word[/\w*/]
+    s = word.stem
+    stem_list.push(s)
+    end
 
-	return stem_list
+  return stem_list
 end
 
 
 # get_title takes a file name a returns the text within the HTML title tag of the file
 
 def get_title(file_name)
-	html = File.read(file_name)
-	
-	doc = Nokogiri::HTML(html)
+  html = File.read(file_name)
+  
+  doc = Nokogiri::HTML(html)
 
-	# Grabbing the title from the page
-	title = doc.css("title")[0].text.strip
+  begin
+    # Grabbing the title from the page
+    title = doc.css("title")[0].text.strip
+  rescue NoMethodError
+    puts "NoMethodError"
+    puts file_name
+    title = nil 
+  end
 
-	return title
+  return title
 end
 
 
@@ -164,21 +176,21 @@ end
 # i.e. its name and url in a hash table
 
 def get_file_details(file_name)
-	fd = {}
-	
-	# Looping through the file and updating the name and url variable with the new data
-	# and then finally adding them to the hash table
-	File.readlines(file_name).each do |line|
-	
-		data = line.split(" ")
-	
-		name = data[0]
-		url = data[1]
+  fd = {}
+  
+  # Looping through the file and updating the name and url variable with the new data
+  # and then finally adding them to the hash table
+  File.readlines(file_name).each do |line|
+    
+    data = line.split(" ")
+    puts data[2]
+    name = data[0]
+    url = data[2]
 
-		fd[name] = url
-	end
-
-	return fd
+    fd[name] = url
+    end
+    puts fd
+  return fd
 end
 
 
@@ -186,8 +198,12 @@ end
 # search engine
 
 def index_file(file, pages_dir, stopwords, file_data)
-	# Removing the dir from the file name
+  # Removing the dir from the file name
+   # begin
         actual_name = file.gsub(pages_dir, "")
+   # rescue NoMethodError
+#      actual_name = badpage.html
+    
 
         # Resetting the file path
         file_path = ""
@@ -212,7 +228,8 @@ def index_file(file, pages_dir, stopwords, file_data)
 
         # Creating the invindex hash table
         for token in tokens
-                if $invindex.member?(token)
+          begin
+            if $invindex.member?(token)
                         if $invindex[token].member?(actual_name)
                                 $invindex[token][actual_name] += 1
                         else
@@ -221,9 +238,16 @@ def index_file(file, pages_dir, stopwords, file_data)
                 else
                         $invindex[token] = {actual_name => 1}
                 end
+      #  end
+#        rescue NoMethodError
+ #         puts "NoMethodError"
         end
+    #puts file_name
+   # title = nil
+  end
+  #end
 end
-	
+
 
 
 
@@ -270,10 +294,11 @@ puts "\nIndexing Started!\n\n"
 # Single Threaded Algorithm
 
 # Loop through each file in the list of files
+#=begin
 for file in file_list
-	index_file(file_list.pop, pages_dir, stopwords, file_data)
+  index_file(file_list.pop, pages_dir, stopwords, file_data)
 end
-
+#=end
 
 #num_of_doc = hit_list.length
 
@@ -292,14 +317,14 @@ files_checked = 0
 Thread.abort_on_exception = true
 
 while file_list.length > 0
-	if open_threads < total_threads
-		open_threads += 1
-		
-		Thread.new {
-				Thread.current["file"] = file_list.pop
-				index_file(Thread.current["file"], pages_dir, stopwords, file_data)
-				open_threads -= 1 }
-	end
+if open_threads < total_threads
+open_threads += 1
+
+Thread.new {
+Thread.current["file"] = file_list.pop
+index_file(Thread.current["file"], pages_dir, stopwords, file_data)
+open_threads -= 1 }
+end
 end
 =end
 
