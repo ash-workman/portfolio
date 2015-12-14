@@ -92,6 +92,7 @@ while count < num_pages
    # constant += 1.0
     count += 1
     next_page = file_list[count]
+  puts next_page
 #    puts next_page
     next_data = pagerank[next_page]
 #    puts next_data
@@ -167,7 +168,8 @@ while count < 5
   end
 end
 
+#puts pagerank
 
-puts new_pagerank
+#puts new_pagerank
 
 write_data('pagerank.dat', new_pagerank)
