@@ -1,0 +1,28 @@
+
+
+
+Ashlee Workman Final Project
+
+To run the crawler program, run ruby crawler.rb num_pages_to_crawl output_dir
+
+Ex: ruby crawler.rb 1000 pages
+
+To run the index program, run ruby index.rb output_dir index.dat
+
+Ex: ruby index.rb pages/ index.dat
+
+To run the pagerank program, run ruby link_analysis.rb
+
+Ex: ruby link_analysis.rb
+
+To run the retrieve program, run ruby retrieve.rb term1, term2, term3...term n
+
+Ex: ruby retrieve.rb love eyeshadow cosmetics
+
+My search engine's url is http://cgi.soic.indiana.edu/~ashworkm/search.html
+
+I decided to multiply the pagerank scores with the tf-idf scores, but I don't think my pagerank algorithm is correct.
+
+My evaluation experiments were successful. Both users were able to locate their desired results within 3 link clicks.
+
+My main source of help was ruby documentation, lecture slides, and stackoverflow.com.
