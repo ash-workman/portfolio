@@ -166,7 +166,7 @@ def tfidf_score(clean_query, invindex, docindex, num_of_doc, pagerank)
        idf = 1 / (1 + Math.log(doc_count.to_f))
        tfidf = tf * idf
 #       puts tfidf
-       score = tfidf * rank
+       score = tfidf
        combined_score_hash[key] = score
       # puts combined_score_hash
       end
