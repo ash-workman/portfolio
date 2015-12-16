@@ -31,7 +31,7 @@ def filemap_out(page, num, dir, datafile)
   datafile.puts(num.to_s + ".html - " + page.uri.to_s)
 end
 
-#the magic of depth-first search
+#the magic of breadth-first search
 def bfs_crawl(max_depth, startpage, output_dir, datafile)
   c_page_num = 0
   c_page = retrieve_page(startpage)
@@ -114,13 +114,42 @@ end
 
 print("Running...")
 
-max_num = max_pages.to_i
 
 # main body of program; outsources most of what it does to above
 dat_file = File.open("index.dat", "w")
-seed_url = 'http://www.sephora.com'
 
-bfs_crawl(max_num, seed_url, output_dir, dat_file)
+seed_url_list = Array.new
+seed_url_list.push('http://www.sephora.com/')
+
+#seed_url1 = 'http://www.sephora.com'
+#seed_url2 = 'http://www.ulta.com'
+#seed_url3 = 'http://www.temptalia.com/'
+#seed_url4 = 'http://www.makeupalley.com/'
+#seed_url4 = 'http://www.urbandecay.com/'
+#seed_url5 = 'https://www.maccosmetics.com/'
+
+#puts seed_url_list
+
+max_num = (max_pages.to_i / (seed_url_list.length)).round
+
+#puts max_num
+
+
+crawl_count = 0
+
+while crawl_count != seed_url_list.length
+  bfs_crawl(max_num, seed_url_list[crawl_count], output_dir, dat_file)
+  puts crawl_count
+  crawl_count += 1
+end
+
+
+
+
+
+
+#bfs_crawl(max_num, seed_url2, output_dir, dat_file)
+#bfs_crawl(max_num, seed_url3, output_dir, dat_file)
 
 dat_file.close
 
