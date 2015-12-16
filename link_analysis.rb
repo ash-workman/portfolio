@@ -96,16 +96,16 @@ while count < num_pages
 #    puts next_page
     next_data = pagerank[next_page]
 #    puts next_data
-#    c_page = page_data[count][0]
+    c_page = page_data[count][0]
   #    puts next_page[0]
-#    show_links = find_links(next_page)
+    show_links = find_links(next_page)
 #    puts next_page
- #  links = find_links(my_page).length 
+   links = find_links(my_page).length 
 #    puts links
 #problem is with pagerank[nextpage]
-  # next_rank = pagerank[file_list[count]]
+   next_rank = pagerank[file_list[count]]
 #   puts pagerank
-#   pagerank[page] = p  / num_pages + ( 1 - p) * c_page.values[0] / c_page.values[1]  
+   pagerank[page] = p  / num_pages + ( 1 - p) * c_page.values[0] / c_page.values[1]  
  
   #  return pagerank
  # puts pagerank.values
@@ -156,16 +156,17 @@ end
 
 #puts link_totals
 
-while count < 5
-  count += 1
+#while count < 5
+#  count += 1
   new_pagerank = Hash.new {|h,k| h[k]=[]}
-  for page in file_list
+#while new_pagerank.values.inject(:+) < 1 
+ for page in file_list
     if link_totals[page] = 0
       link_totals[page] = 1
     else link_totals[page] = link_totals[page]
     end
    new_pagerank[page] = 0.85  / num_pages + ( 1 - 0.85) * pagerank[page] / link_totals[page]
-  end
+#  end
 end
 
 #puts pagerank
