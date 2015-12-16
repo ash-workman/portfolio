@@ -1,5 +1,5 @@
 # I427 Fall 2015, Assignment 3
-#   Code authors: [Ashlee Workman, Krish Puri]
+#   Code authors: [Ashlee Workman]
 #   
 #   based on skeleton code by D Crandall
 
@@ -336,4 +336,4 @@ write_data("invindex.dat", $invindex)
 write_data("doc.dat", $docindex)
 
 # done!
-puts "\nIndexing complete!\n\n";
+puts "\nIndexing complete!\n\n"
