@@ -142,8 +142,11 @@ def tfidf_score(clean_query, invindex, docindex, num_of_doc, pagerank)
 #      doc_nested = docindex.values
  #     puts doc_nested
 #      doc_further = doc_nested[0]
+     else 
+       next
     end
 #if term in inv_nested.keys
+     
      for key, value in inv_nested
 # count is number of times term appears on page 
        count = inv_nested[key]
@@ -158,7 +161,7 @@ def tfidf_score(clean_query, invindex, docindex, num_of_doc, pagerank)
 #      puts inv_nested
 #      doc_nested = docindex[page]
  #     doc_terms = doc_nested[0]
-       puts rank
+#       puts rank
        tf = count / doc_further.to_f
        idf = 1 / (1 + Math.log(doc_count.to_f))
        tfidf = tf * idf
@@ -231,31 +234,31 @@ num_of_doc = hit_list.length
 
 
 #urls = []
-print "<P><P><h1>Search Results</h1>"
-print "<p><p><P><strong>Your search returned the following results:</strong>", "\n"
+#print "<P><P><h1>Search Results</h1>"
+#print "<p><p><P><strong>Your search returned the following results:</strong>", "\n"
 if (num_of_doc == 0)
   print "No documents contained these query terms.\n"
-else
+#else
 #  num_of_doc = hit_list.length
-
+end
   top_results = tfidf_score(clean_query, invindex, docindex, num_of_doc, pagerank)
   my_results = Hash[top_results.map {|key, value| [key, value]}]
 
 
-  my_results.keys.each do |page|
+ my_results.keys.each do |page|
       if docindex.include?(page)
         page_title = docindex[page][1]
         page_url = docindex[page][2]
         puts "<P><strong>Title:</strong> #{page_title}"
         puts "<strong>URL:</strong><a href="+"#{page_url}"+">"+"#{page_url}</a>"
         #puts "URL:" + " <a href="+"#{page_url}"+">"
-        print "\n\n"
-        #urls.push(page_url)  
-      end
-    end      
-end
-print "<P> Total number of document: #{docindex.keys.length} \n"
-print "Total number of hits: #{num_of_doc} \n<P><P>"
+      #  print "\n\n"
+#        urls.push(page_url)  
+     end
+   end      
+#end
+#print "<P> Total number of document: #{docindex.keys.length} \n"
+#print "Total number of hits: #{num_of_doc} \n<P><P>"
 #for url in urls
 #puts 'URL:' + ' <a href="'+url+'">'
 #end
